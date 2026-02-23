@@ -1,0 +1,136 @@
+.logoDropdownWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.logoLink {
+  display: inline-block;
+}
+
+.logoLink .logo {
+  margin-top: 6px;
+  transition: transform 0.2s ease;
+  width: 60;
+  height: 30px;
+  max-width: none;
+}
+
+.dropdownToggle {
+  position: relative;
+  border: none !important;
+  background: var(--ifm-menu-link-sublist-icon) 50% / 2rem 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  transform: rotateZ(180deg) !important;
+  transform-origin: 50% 50% !important;
+  transition: transform var(--ifm-transition-fast) linear;
+  filter: var(--ifm-menu-link-sublist-icon-filter);
+  cursor: pointer;
+  margin-left: 0.25rem;
+}
+
+.dropdownToggle:hover {
+  color: var(--ifm-color-primary);
+}
+
+.dropdownToggle.open {
+  transform: rotateZ(0deg) !important;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  background-color: var(--ifm-navbar-background-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  padding: 10px 0;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  list-style: none;
+
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+@supports (backdrop-filter: blur(20px)) {
+  .dropdownMenu {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+.dropdownMenu.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdownMenu.close {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdownItem a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  width: 100%;
+  color: var(--ifm-color-emphasis-900);
+  font-weight: 500;
+}
+
+.dropdownItem img {
+  height: 24px;
+  margin-right: 12px;
+}
+
+.dropdownItem:hover {
+  background-color: var(--ifm-background-darker);
+  color: var(--ifm-color-primary);
+}
+
+[data-theme='dark'] .dropdownMenu {
+  /* Fallback для браузеров без поддержки backdrop-filter */
+  background-color: #1e1e1e;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* Применяем backdrop-filter только если поддерживается */
+@supports (backdrop-filter: blur(20px)) {
+  [data-theme='dark'] .dropdownMenu {
+    background-color: rgba(30, 30, 30, 0.9);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+@media (max-width: 768px) {
+  .dropdownMenu {
+    top: 45px;
+    left: auto;
+    right: 0;
+    min-width: 180px;
+  }
+
+  .dropdownItem {
+    padding: 12px 16px;
+  }
+}
