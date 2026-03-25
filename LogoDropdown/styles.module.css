@@ -130,7 +130,12 @@
     min-width: 180px;
   }
 
+  .dropdownToggle {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
   .dropdownItem {
-    padding: 12px 16px;
+    padding: 14px 16px;
   }
 }
