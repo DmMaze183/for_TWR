@@ -6,36 +6,46 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
 import styles from "./styles.module.css"
 
 // Для by локали используется ru домен для чат-центра
-const getChatCenterDomain = (locale: string) => {
+const getChatCenterDomain = (locale: Region): "ru" | "kz" => {
   return locale === "by" ? "ru" : locale
 }
 
-const getProductsLight = (locale: string) => {
-  const chatCenterDomain = getChatCenterDomain(locale)
-  const products = [
-    {
-      url: `https://docs-chatcenter.edna.${chatCenterDomain}`,
-      logo: "/img/cc-logo-white.svg",
-    },
-  ]
-  
-  // Enterprise доступен только для ru локали
-  if (locale === "ru") {
-    products.push({
-      url: "https://docs-enterprise.edna.ru",
-      logo: "/img/enterprise_black.svg",
-    })
-  }
-  
-  return products
+type ThemeMode = "light" | "dark"
+type Region = "by" | "ru" | "kz"
+
+type ProductConfig = {
+  url: string
+  logoLight: string
+  logoDark: string
 }
 
-const getProductsDark = (locale: string) => {
+type Product = {
+  url: string
+  logo: string
+}
+
+const ALLOWED_REGIONS: Region[] = ["by", "ru", "kz"]
+
+const normalizeRegion = (value: unknown): Region => {
+  if (typeof value !== "string") {
+    return "ru"
+  }
+
+  return ALLOWED_REGIONS.includes(value as Region) ? (value as Region) : "ru"
+}
+
+const MAIN_LOGO = {
+  light: "/img/pulse_black.svg",
+  dark: "/img/pulse_white.svg",
+} as const
+
+const getProducts = (locale: Region, mode: ThemeMode): Product[] => {
   const chatCenterDomain = getChatCenterDomain(locale)
-  const products = [
+  const products: ProductConfig[] = [
     {
       url: `https://docs-chatcenter.edna.${chatCenterDomain}`,
-      logo: "/img/cc-logo.svg",
+      logoLight: "/img/cc_black.svg",
+      logoDark: "/img/cc_white.svg",
     },
   ]
   
@@ -43,22 +53,26 @@ const getProductsDark = (locale: string) => {
   if (locale === "ru") {
     products.push({
       url: "https://docs-enterprise.edna.ru",
-      logo: "/img/enterprise_white.svg",
+      logoLight: "/img/enterprise_black.svg",
+      logoDark: "/img/enterprise_white.svg",
     })
   }
   
-  return products
+  return products.map((product) => ({
+    url: product.url,
+    logo: mode === "dark" ? product.logoDark : product.logoLight,
+  }))
 }
 
 export default function NavbarLogoDropdown() {
   const { colorMode } = useColorMode()
   const { siteConfig } = useDocusaurusContext()
-  const isDark = colorMode === "dark"
+  const mode: ThemeMode = colorMode === "dark" ? "dark" : "light"
 
-  const locale = (siteConfig.customFields?.region as "by" | "ru" | "kz") || "ru"
+  const locale = normalizeRegion(siteConfig.customFields?.region)
 
-  const products = isDark ? getProductsDark(locale) : getProductsLight(locale)
-  const logo = isDark ? "/img/logo_pulse.svg" : "/img/logo_black.svg"
+  const products = getProducts(locale, mode)
+  const logo = MAIN_LOGO[mode]
 
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
